@@ -17,7 +17,7 @@ class IoServerTest extends \PHPUnit_Framework_TestCase {
     protected $reactor;
 
     public function setUp() {
-        $this->app = $this->getMock('\\Ratchet\\MessageComponentInterface');
+        $this->app = $this->getMock('\\Ratchet\\Server\\DataComponentInterface');
 
         $loop = new StreamSelectLoop;
         $this->reactor = new Server($loop);
@@ -41,7 +41,7 @@ class IoServerTest extends \PHPUnit_Framework_TestCase {
     public function testOnData() {
         $msg = 'Hello World!';
 
-        $this->app->expects($this->once())->method('onMessage')->with(
+        $this->app->expects($this->once())->method('onData')->with(
             $this->isInstanceOf('\\Ratchet\\ConnectionInterface')
           , $msg
         );
@@ -110,7 +110,7 @@ class IoServerTest extends \PHPUnit_Framework_TestCase {
         $this->server->handleConnect($conn);
 
         $e = new \Exception;
-        $this->app->expects($this->once())->method('onMessage')->with($this->isInstanceOf('\\Ratchet\\ConnectionInterface'), 'f')->will($e);
+        $this->app->expects($this->once())->method('onData')->with($this->isInstanceOf('\\Ratchet\\ConnectionInterface'), 'f')->will($e);
         $this->app->expects($this->once())->method('onError')->with($this->instanceOf('\\Ratchet\\ConnectionInterface', $e));
 
         $this->server->handleData('f', $conn);

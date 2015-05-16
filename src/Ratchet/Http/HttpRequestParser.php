@@ -1,6 +1,6 @@
 <?php
 namespace Ratchet\Http;
-use Ratchet\MessageInterface;
+use Ratchet\Server\DataInterface;
 use Ratchet\ConnectionInterface;
 use Ratchet\Http\Guzzle\Http\Message\RequestFactory;
 
@@ -9,7 +9,7 @@ use Ratchet\Http\Guzzle\Http\Message\RequestFactory;
  * and parses HTTP headers, returning a Guzzle Request object
  * once it's been buffered
  */
-class HttpRequestParser implements MessageInterface {
+class HttpRequestParser implements DataInterface {
     const EOM = "\r\n\r\n";
 
     /**
@@ -25,7 +25,7 @@ class HttpRequestParser implements MessageInterface {
      * @return \Guzzle\Http\Message\RequestInterface|null
      * @throws \OverflowException If the message buffer has become too large
      */
-    public function onMessage(ConnectionInterface $context, $data) {
+    public function onData(ConnectionInterface $context, $data) {
         if (!isset($context->httpBuffer)) {
             $context->httpBuffer = '';
         }

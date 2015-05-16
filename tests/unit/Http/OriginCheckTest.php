@@ -40,7 +40,7 @@ class OriginCheckTest extends AbstractMessageComponentTestCase {
         $this->_serv->onOpen($this->_conn, $this->_reqStub);
     }
 
-    public function testOnMessage() {
+    public function testonData() {
         $this->passthroughMessageTest('Hello World!');
     }
 }

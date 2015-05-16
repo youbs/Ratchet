@@ -1,6 +1,5 @@
 <?php
 namespace Ratchet\Session;
-use Ratchet\MessageComponentInterface;
 use Ratchet\ConnectionInterface;
 use Ratchet\Http\HttpServerInterface;
 use Guzzle\Http\Message\RequestInterface;
@@ -17,7 +16,7 @@ use Symfony\Component\HttpFoundation\Session\Storage\Handler\NullSessionHandler;
  */
 class SessionProvider implements HttpServerInterface {
     /**
-     * @var \Ratchet\MessageComponentInterface
+     * @var \Ratchet\Http\HttpServerInterface
      */
     protected $_app;
 
@@ -91,8 +90,8 @@ class SessionProvider implements HttpServerInterface {
     /**
      * {@inheritdoc}
      */
-    function onMessage(ConnectionInterface $from, $msg) {
-        return $this->_app->onMessage($from, $msg);
+    function onData(ConnectionInterface $from, $chunk) {
+        return $this->_app->onData($from, $chunk);
     }
 
     /**

@@ -1,6 +1,5 @@
 <?php
 namespace Ratchet\WebSocket;
-use Ratchet\MessageComponentInterface;
 use Ratchet\ConnectionInterface;
 use Ratchet\Http\HttpServerInterface;
 use Guzzle\Http\Message\RequestInterface;
@@ -24,7 +23,7 @@ class WsServer implements HttpServerInterface {
 
     /**
      * Decorated component
-     * @var \Ratchet\MessageComponentInterface
+     * @var \Ratchet\WebSocket\MessageComponentInterface
      */
     public $component;
 
@@ -51,7 +50,7 @@ class WsServer implements HttpServerInterface {
     private $isSpGenerated = false;
 
     /**
-     * @param \Ratchet\MessageComponentInterface $component Your application to run with WebSockets
+     * @param \Ratchet\WebSocket\MessageComponentInterface $component Your application to run with WebSockets
      * If you want to enable sub-protocols have your component implement WsServerInterface as well
      */
     public function __construct(MessageComponentInterface $component) {
@@ -87,16 +86,17 @@ class WsServer implements HttpServerInterface {
     /**
      * {@inheritdoc}
      */
-    public function onMessage(ConnectionInterface $from, $msg) {
+    public function onData(ConnectionInterface $from, $chunk) {
         if ($from->WebSocket->closing) {
             return;
         }
 
         if (true === $from->WebSocket->established) {
-            return $from->WebSocket->version->onMessage($this->connections[$from], $msg);
+            // TODO: I think version should be onData
+            return $from->WebSocket->version->onMessage($this->connections[$from], $chunk);
         }
 
-        $this->attemptUpgrade($from, $msg);
+        $this->attemptUpgrade($from, $chunk);
     }
 
     protected function attemptUpgrade(ConnectionInterface $conn, $data = '') {

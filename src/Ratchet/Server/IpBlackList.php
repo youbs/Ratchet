@@ -1,23 +1,22 @@
 <?php
 namespace Ratchet\Server;
-use Ratchet\MessageComponentInterface;
 use Ratchet\ConnectionInterface;
 
-class IpBlackList implements MessageComponentInterface {
+class IpBlackList implements DataComponentInterface {
     /**
      * @var array
      */
     protected $_blacklist = array();
 
     /**
-     * @var \Ratchet\MessageComponentInterface
+     * @var \Ratchet\Server\DataComponentInterface
      */
     protected $_decorating;
 
     /**
-     * @param \Ratchet\MessageComponentInterface $component
+     * @param \Ratchet\Server\DataComponentInterface $component
      */
-    public function __construct(MessageComponentInterface $component) {
+    public function __construct(DataComponentInterface $component) {
         $this->_decorating = $component;
     }
 
@@ -87,8 +86,8 @@ class IpBlackList implements MessageComponentInterface {
     /**
      * {@inheritdoc}
      */
-    function onMessage(ConnectionInterface $from, $msg) {
-        return $this->_decorating->onMessage($from, $msg);
+    function onData(ConnectionInterface $from, $chunk) {
+        return $this->_decorating->onData($from, $chunk);
     }
 
     /**

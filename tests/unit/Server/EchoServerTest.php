@@ -14,7 +14,7 @@ class EchoServerTest extends \PHPUnit_Framework_TestCase {
     public function testMessageEchod() {
         $message = 'Tillsonburg, my back still aches when I hear that word.';
         $this->_conn->expects($this->once())->method('send')->with($message);
-        $this->_comp->onMessage($this->_conn, $message);
+        $this->_comp->onData($this->_conn, $message);
     }
 
     public function testErrorClosesConnection() {

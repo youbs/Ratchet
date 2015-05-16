@@ -1,7 +1,8 @@
 <?php
 namespace Ratchet\Wamp;
-use Ratchet\MessageComponentInterface;
+use Ratchet\WebSocket\MessageComponentInterface;
 use Ratchet\WebSocket\WsServerInterface;
+use Ratchet\WebSocket\Version\MessageInterface;
 use Ratchet\ConnectionInterface;
 
 /**
@@ -82,7 +83,7 @@ class ServerProtocol implements MessageComponentInterface, WsServerInterface {
      * @throws \Ratchet\Wamp\Exception
      * @throws \Ratchet\Wamp\JsonException
      */
-    public function onMessage(ConnectionInterface $from, $msg) {
+    public function onMessage(ConnectionInterface $from, MessageInterface $msg) {
         $from = $this->connections[$from];
 
         if (null === ($json = @json_decode($msg, true))) {

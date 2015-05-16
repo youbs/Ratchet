@@ -2,7 +2,7 @@
 namespace Ratchet\Http;
 use Guzzle\Http\Message\RequestInterface;
 use Ratchet\ConnectionInterface;
-use Ratchet\MessageComponentInterface;
+use Ratchet\Server\DataComponentInterface;
 use Guzzle\Http\Message\Response;
 
 /**
@@ -12,17 +12,19 @@ use Guzzle\Http\Message\Response;
  */
 class OriginCheck implements HttpServerInterface {
     /**
-     * @var \Ratchet\MessageComponentInterface
+     * @var \Ratchet\Server\DataComponentInterface
      */
     protected $_component;
 
     public $allowedOrigins = array();
 
     /**
-     * @param MessageComponentInterface $component Component/Application to decorate
-     * @param array                     $allowed An array of allowed domains that are allowed to connect from
+     * @param \Ratchet\Server\DataComponentInterface $component Component/Application to decorate
+     * @param array                                  $allowed An array of allowed domains that are allowed to connect from
+     * @todo Shouldn't the first parameter by an HttpServerInterface???
+     * @note See above
      */
-    public function __construct(MessageComponentInterface $component, array $allowed = array()) {
+    public function __construct(DataComponentInterface $component, array $allowed = array()) {
         $this->_component = $component;
         $this->allowedOrigins += $allowed;
     }
@@ -44,8 +46,8 @@ class OriginCheck implements HttpServerInterface {
     /**
      * {@inheritdoc}
      */
-    function onMessage(ConnectionInterface $from, $msg) {
-        return $this->_component->onMessage($from, $msg);
+    function onData(ConnectionInterface $from, $chunk) {
+        return $this->_component->onData($from, $chunk);
     }
 
     /**

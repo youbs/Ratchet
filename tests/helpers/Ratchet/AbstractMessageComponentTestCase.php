@@ -44,7 +44,7 @@ abstract class AbstractMessageComponentTestCase extends \PHPUnit_Framework_TestC
     }
 
     public function passthroughMessageTest($value) {
-        $this->_app->expects($this->once())->method('onMessage')->with($this->isExpectedConnection(), $value);
-        $this->_serv->onMessage($this->_conn, $value);
+        $this->_app->expects($this->once())->method('onData')->with($this->isExpectedConnection(), $value);
+        $this->_serv->onData($this->_conn, $value);
     }
 }

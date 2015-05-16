@@ -10,7 +10,7 @@ class IpBlackListTest extends \PHPUnit_Framework_TestCase {
     protected $mock;
 
     public function setUp() {
-        $this->mock = $this->getMock('\\Ratchet\\MessageComponentInterface');
+        $this->mock = $this->getMock('\\Ratchet\\Server\\DataComponentInterface');
         $this->blocker = new IpBlackList($this->mock);
     }
 
@@ -46,13 +46,13 @@ class IpBlackListTest extends \PHPUnit_Framework_TestCase {
         $ret = $this->blocker->onOpen($conn);
     }
 
-    public function testOnMessageDecoration() {
+    public function testonDataDecoration() {
         $conn = $this->newConn();
         $msg  = 'Hello not being blocked';
 
-        $this->mock->expects($this->once())->method('onMessage')->with($conn, $msg);
+        $this->mock->expects($this->once())->method('onData')->with($conn, $msg);
 
-        $this->blocker->onMessage($conn, $msg);
+        $this->blocker->onData($conn, $msg);
     }
 
     public function testOnCloseDecoration() {

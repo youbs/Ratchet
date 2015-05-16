@@ -1,6 +1,5 @@
 <?php
 namespace Ratchet\Server;
-use Ratchet\MessageComponentInterface;
 use React\EventLoop\LoopInterface;
 use React\Socket\ServerInterface;
 use React\EventLoop\Factory as LoopFactory;
@@ -17,7 +16,7 @@ class IoServer {
     public $loop;
 
     /**
-     * @var \Ratchet\MessageComponentInterface
+     * @var \Ratchet\Server\DataComponentInterface
      */
     public $app;
 
@@ -34,11 +33,11 @@ class IoServer {
     public $socket;
 
     /**
-     * @param \Ratchet\MessageComponentInterface  $app      The Ratchet application stack to host
-     * @param \React\Socket\ServerInterface       $socket   The React socket server to run the Ratchet application off of
-     * @param \React\EventLoop\LoopInterface|null $loop     The React looper to run the Ratchet application off of
+     * @param \Ratchet\Server\DataComponentInterface $app      The Ratchet application stack to host
+     * @param \React\Socket\ServerInterface          $socket   The React socket server to run the Ratchet application off of
+     * @param \React\EventLoop\LoopInterface|null    $loop     The React looper to run the Ratchet application off of
      */
-    public function __construct(MessageComponentInterface $app, ServerInterface $socket, LoopInterface $loop = null) {
+    public function __construct(DataComponentInterface $app, ServerInterface $socket, LoopInterface $loop = null) {
         if (false === strpos(PHP_VERSION, "hiphop")) {
             gc_enable();
         }
@@ -59,12 +58,12 @@ class IoServer {
     }
 
     /**
-     * @param  \Ratchet\MessageComponentInterface $component The application that I/O will call when events are received
-     * @param  int                                $port      The port to server sockets on
-     * @param  string                             $address   The address to receive sockets on (0.0.0.0 means receive connections from any)
+     * @param  \Ratchet\Server\DataComponentInterface $component The application that I/O will call when events are received
+     * @param  int                                    $port      The port to server sockets on
+     * @param  string                                 $address   The address to receive sockets on (0.0.0.0 means receive connections from any)
      * @return IoServer
      */
-    public static function factory(MessageComponentInterface $component, $port = 80, $address = '0.0.0.0') {
+    public static function factory(DataComponentInterface $component, $port = 80, $address = '0.0.0.0') {
         $loop   = LoopFactory::create();
         $socket = new Reactor($loop);
         $socket->listen($port, $address);
@@ -110,7 +109,7 @@ class IoServer {
      */
     public function handleData($data, $conn) {
         try {
-            $this->app->onMessage($conn->decor, $data);
+            $this->app->onData($conn->decor, $data);
         } catch (\Exception $e) {
             $this->handleError($e, $conn);
         }

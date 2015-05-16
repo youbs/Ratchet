@@ -1,7 +1,6 @@
 <?php
 namespace Ratchet\WebSocket\Version;
 use Ratchet\ConnectionInterface;
-use Ratchet\MessageInterface;
 use Ratchet\WebSocket\Version\RFC6455\HandshakeVerifier;
 use Ratchet\WebSocket\Version\RFC6455\Message;
 use Ratchet\WebSocket\Version\RFC6455\Frame;
@@ -95,10 +94,9 @@ class RFC6455 implements VersionInterface {
     }
 
     /**
-     * @param \Ratchet\WebSocket\Version\RFC6455\Connection $from
-     * @param string                                        $data
+     * @param inherit
      */
-    public function onMessage(ConnectionInterface $from, $data) {
+    public function onMessage(ConnectionInterface $from, MessageInterface $data) {
         $overflow = '';
 
         if (!isset($from->WebSocket->message)) {

@@ -97,10 +97,10 @@ class SessionProviderTest extends AbstractMessageComponentTestCase {
         return $conn;
     }
 
-    public function testOnMessageDecorator() {
+    public function testonDataDecorator() {
         $message = "Database calls are usually blocking  :(";
-        $this->_app->expects($this->once())->method('onMessage')->with($this->isExpectedConnection(), $message);
-        $this->_serv->onMessage($this->_conn, $message);
+        $this->_app->expects($this->once())->method('onData')->with($this->isExpectedConnection(), $message);
+        $this->_serv->onData($this->_conn, $message);
     }
 
     public function testRejectInvalidSeralizers() {

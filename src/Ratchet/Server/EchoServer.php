@@ -1,17 +1,16 @@
 <?php
 namespace Ratchet\Server;
-use Ratchet\MessageComponentInterface;
 use Ratchet\ConnectionInterface;
 
 /**
  * A simple Ratchet application that will reply to all messages with the message it received
  */
-class EchoServer implements MessageComponentInterface {
+class EchoServer implements DataComponentInterface {
     public function onOpen(ConnectionInterface $conn) {
     }
 
-    public function onMessage(ConnectionInterface $from, $msg) {
-        $from->send($msg);
+    public function onData(ConnectionInterface $from, $chunk) {
+        $from->send($chunk);
     }
 
     public function onClose(ConnectionInterface $conn) {

@@ -11,6 +11,7 @@ use Ratchet\Server\FlashPolicy;
 use Ratchet\Http\HttpServer;
 use Ratchet\Http\Router;
 use Ratchet\WebSocket\WsServer;
+use Ratchet\WebSocket\MessageComponentInterface;
 use Ratchet\Wamp\WampServer;
 use Symfony\Component\Routing\RouteCollection;
 use Symfony\Component\Routing\Route;

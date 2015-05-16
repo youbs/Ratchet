@@ -28,24 +28,24 @@ class HttpServerTest extends AbstractMessageComponentTestCase {
 
         $this->_conn->httpHeadersReceived = false;
         $this->_app->expects($this->once())->method('onOpen')->with($this->isExpectedConnection());
-        $this->_serv->onMessage($this->_conn, $headers);
+        $this->_serv->onData($this->_conn, $headers);
     }
 
-    public function testOnMessageAfterHeaders() {
+    public function testonDataAfterHeaders() {
         $headers = "GET / HTTP/1.1\r\nHost: socketo.me\r\n\r\n";
         $this->_conn->httpHeadersReceived = false;
-        $this->_serv->onMessage($this->_conn, $headers);
+        $this->_serv->onData($this->_conn, $headers);
 
         $message = "Hello World!";
-        $this->_app->expects($this->once())->method('onMessage')->with($this->isExpectedConnection(), $message);
-        $this->_serv->onMessage($this->_conn, $message);
+        $this->_app->expects($this->once())->method('onData')->with($this->isExpectedConnection(), $message);
+        $this->_serv->onData($this->_conn, $message);
     }
 
     public function testBufferOverflow() {
         $this->_conn->expects($this->once())->method('close');
         $this->_conn->httpHeadersReceived = false;
 
-        $this->_serv->onMessage($this->_conn, str_repeat('a', 5000));
+        $this->_serv->onData($this->_conn, str_repeat('a', 5000));
     }
 
     public function testCloseIfNotEstablished() {
@@ -57,8 +57,8 @@ class HttpServerTest extends AbstractMessageComponentTestCase {
     public function testBufferHeaders() {
         $this->_conn->httpHeadersReceived = false;
         $this->_app->expects($this->never())->method('onOpen');
-        $this->_app->expects($this->never())->method('onMessage');
+        $this->_app->expects($this->never())->method('onData');
 
-        $this->_serv->onMessage($this->_conn, "GET / HTTP/1.1");
+        $this->_serv->onData($this->_conn, "GET / HTTP/1.1");
     }
 }

@@ -1,10 +1,10 @@
 <?php
 namespace Ratchet\Http;
-use Ratchet\MessageComponentInterface;
+use Ratchet\Server\DataComponentInterface;
 use Ratchet\ConnectionInterface;
 use Guzzle\Http\Message\Response;
 
-class HttpServer implements MessageComponentInterface {
+class HttpServer implements DataComponentInterface {
     /**
      * Buffers incoming HTTP requests returning a Guzzle Request when coalesced
      * @var HttpRequestParser
@@ -35,10 +35,10 @@ class HttpServer implements MessageComponentInterface {
     /**
      * {@inheritdoc}
      */
-    public function onMessage(ConnectionInterface $from, $msg) {
+    public function onData(ConnectionInterface $from, $chunk) {
         if (true !== $from->httpHeadersReceived) {
             try {
-                if (null === ($request = $this->_reqParser->onMessage($from, $msg))) {
+                if (null === ($request = $this->_reqParser->onData($from, $chunk))) {
                     return;
                 }
             } catch (\OverflowException $oe) {
@@ -50,7 +50,7 @@ class HttpServer implements MessageComponentInterface {
             return $this->_httpServer->onOpen($from, $request);
         }
 
-        $this->_httpServer->onMessage($from, $msg);
+        $this->_httpServer->onData($from, $chunk);
     }
 
     /**

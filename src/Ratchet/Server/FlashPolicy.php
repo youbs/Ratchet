@@ -1,6 +1,5 @@
 <?php
 namespace Ratchet\Server;
-use Ratchet\MessageComponentInterface;
 use Ratchet\ConnectionInterface;
 
 /**
@@ -13,7 +12,7 @@ use Ratchet\ConnectionInterface;
  * @link http://learn.adobe.com/wiki/download/attachments/64389123/CrossDomain_PolicyFile_Specification.pdf?version=1
  * @link view-source:http://www.adobe.com/xml/schemas/PolicyFileSocket.xsd
  */
-class FlashPolicy implements MessageComponentInterface {
+class FlashPolicy implements DataComponentInterface {
 
     /**
      * Contains the root policy node
@@ -113,7 +112,7 @@ class FlashPolicy implements MessageComponentInterface {
     /**
      * {@inheritdoc}
      */
-    public function onMessage(ConnectionInterface $from, $msg) {
+    public function onData(ConnectionInterface $from, $msg) {
         if (!$this->_cacheValid) {
             $this->_cache      = $this->renderPolicy()->asXML();
             $this->_cacheValid = true;

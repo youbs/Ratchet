@@ -35,16 +35,16 @@ class HttpRequestParserTest extends \PHPUnit_Framework_TestCase {
 
         $this->parser->maxSize = 20;
 
-        $this->assertNull($this->parser->onMessage($conn, "GET / HTTP/1.1\r\n"));
+        $this->assertNull($this->parser->onData($conn, "GET / HTTP/1.1\r\n"));
 
         $this->setExpectedException('OverflowException');
 
-        $this->parser->onMessage($conn, "Header-Is: Too Big");
+        $this->parser->onData($conn, "Header-Is: Too Big");
     }
 
     public function testReturnTypeIsRequest() {
         $conn = $this->getMock('\Ratchet\ConnectionInterface');
-        $return = $this->parser->onMessage($conn, "GET / HTTP/1.1\r\nHost: socketo.me\r\n\r\n");
+        $return = $this->parser->onData($conn, "GET / HTTP/1.1\r\nHost: socketo.me\r\n\r\n");
 
         $this->assertInstanceOf('\Guzzle\Http\Message\RequestInterface', $return);
     }

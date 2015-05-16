@@ -1,13 +1,13 @@
 <?php
 namespace Ratchet\WebSocket\Version;
-use Ratchet\MessageInterface;
+use Ratchet\WebSocket\MessageCallableInterface;
 use Ratchet\ConnectionInterface;
 use Guzzle\Http\Message\RequestInterface;
 
 /**
  * A standard interface for interacting with the various version of the WebSocket protocol
  */
-interface VersionInterface extends MessageInterface {
+interface VersionInterface extends MessageCallableInterface {
     /**
      * Given an HTTP header, determine if this version should handle the protocol
      * @param \Guzzle\Http\Message\RequestInterface $request
@@ -32,7 +32,7 @@ interface VersionInterface extends MessageInterface {
 
     /**
      * @param  \Ratchet\ConnectionInterface $conn
-     * @param  \Ratchet\MessageInterface    $coalescedCallback
+     * @param  \Ratchet\WebSocket\Version\MessageInterface $coalescedCallback
      * @return \Ratchet\ConnectionInterface
      */
     function upgradeConnection(ConnectionInterface $conn, MessageInterface $coalescedCallback);

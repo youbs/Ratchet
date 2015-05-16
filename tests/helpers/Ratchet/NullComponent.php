@@ -1,14 +1,17 @@
 <?php
 namespace Ratchet;
 use Ratchet\ConnectionInterface;
-use Ratchet\MessageComponentInterface;
+use Ratchet\Server\DataComponentInterface;
 use Ratchet\WebSocket\WsServerInterface;
 use Ratchet\Wamp\WampServerInterface;
 
-class NullComponent implements MessageComponentInterface, WsServerInterface, WampServerInterface {
+class NullComponent implements DataComponentInterface, WsServerInterface, WampServerInterface {
     public function onOpen(ConnectionInterface $conn) {}
 
-    public function onMessage(ConnectionInterface $conn, $msg) {}
+// TODO: Implement the interface and `use` the MessageInterface (when it's finalized)
+//    public function onMessage(ConnectionInterface $msg, MessageInterface $data);
+
+    public function onData(ConnectionInterface $conn, $chunk) {}
 
     public function onClose(ConnectionInterface $conn) {}
 

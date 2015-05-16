@@ -129,13 +129,13 @@ class FlashPolicyTest extends \PHPUnit_Framework_TestCase {
         $this->_policy->onError($conn, new \Exception);
     }
 
-    public function testOnMessageSendsString() {
+    public function testonDataSendsString() {
         $this->_policy->addAllowedAccess('*', '*');
 
         $conn = $this->getMock('\\Ratchet\\ConnectionInterface');
         $conn->expects($this->once())->method('send')->with($this->isType('string'));
 
-        $this->_policy->onMessage($conn, ' ');
+        $this->_policy->onData($conn, ' ');
     }
 
     public function testOnOpenExists() {

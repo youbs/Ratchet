@@ -64,8 +64,8 @@ class Router implements HttpServerInterface {
     /**
      * {@inheritdoc}
      */
-    function onMessage(ConnectionInterface $from, $msg) {
-        $from->controller->onMessage($from, $msg);
+    function onData(ConnectionInterface $from, $chunk) {
+        $from->controller->onData($from, $chunk);
     }
 
     /**

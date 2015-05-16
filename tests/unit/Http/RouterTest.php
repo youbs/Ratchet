@@ -59,14 +59,14 @@ class RouterTest extends \PHPUnit_Framework_TestCase {
         $this->_router->onOpen($this->_conn, $this->_req);
     }
 
-    public function testControllerOnMessageBubbles() {
+    public function testControlleronDataBubbles() {
         $message = "The greatest trick the Devil ever pulled was convincing the world he didn't exist";
         $controller = $this->getMockBuilder('\Ratchet\WebSocket\WsServer')->disableOriginalConstructor()->getMock();
-        $controller->expects($this->once())->method('onMessage')->with($this->_conn, $message);
+        $controller->expects($this->once())->method('onData')->with($this->_conn, $message);
 
         $this->_conn->controller = $controller;
 
-        $this->_router->onMessage($this->_conn, $message);
+        $this->_router->onData($this->_conn, $message);
     }
 
     public function testControllerOnCloseBubbles() {
