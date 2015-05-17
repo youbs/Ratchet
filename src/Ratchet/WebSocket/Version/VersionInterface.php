@@ -1,5 +1,6 @@
 <?php
 namespace Ratchet\WebSocket\Version;
+use Ratchet\Server\DataInterface;
 use Ratchet\WebSocket\MessageCallableInterface;
 use Ratchet\ConnectionInterface;
 use Guzzle\Http\Message\RequestInterface;
@@ -7,7 +8,7 @@ use Guzzle\Http\Message\RequestInterface;
 /**
  * A standard interface for interacting with the various version of the WebSocket protocol
  */
-interface VersionInterface extends MessageCallableInterface {
+interface VersionInterface extends DataInterface {
     /**
      * Given an HTTP header, determine if this version should handle the protocol
      * @param \Guzzle\Http\Message\RequestInterface $request

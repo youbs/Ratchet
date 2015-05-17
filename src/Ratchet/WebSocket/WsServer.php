@@ -93,7 +93,7 @@ class WsServer implements HttpServerInterface {
 
         if (true === $from->WebSocket->established) {
             // TODO: I think version should be onData
-            return $from->WebSocket->version->onMessage($this->connections[$from], $chunk);
+            return $from->WebSocket->version->onData($this->connections[$from], $chunk);
         }
 
         $this->attemptUpgrade($from, $chunk);

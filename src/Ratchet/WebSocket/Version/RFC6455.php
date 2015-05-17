@@ -97,7 +97,7 @@ class RFC6455 implements VersionInterface {
     /**
      * @param inherit
      */
-    public function onMessage(ConnectionInterface $from, MessageInterface $data) {
+    public function onData(ConnectionInterface $from, $data) {
         $overflow = '';
 
         if (!isset($from->WebSocket->message)) {
@@ -191,10 +191,10 @@ class RFC6455 implements VersionInterface {
         }
 
         if ($from->WebSocket->message->isCoalesced()) {
-            $parsed = $from->WebSocket->message->getPayload();
+            $parsed = $from->WebSocket->message;
             unset($from->WebSocket->message);
 
-            if (!$this->validator->checkEncoding($parsed, 'UTF-8')) {
+            if (!$this->validator->checkEncoding($parsed->getPayload(), 'UTF-8')) {
                 return $from->close(Frame::CLOSE_BAD_PAYLOAD);
             }
 
@@ -202,7 +202,7 @@ class RFC6455 implements VersionInterface {
         }
 
         if (strlen($overflow) > 0) {
-            $this->onMessage($from, $overflow);
+            $this->onData($from, $overflow);
         }
     }
 
