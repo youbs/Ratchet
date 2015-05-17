@@ -1,6 +1,7 @@
 <?php
 namespace Ratchet\WebSocket\Version;
 use Ratchet\ConnectionInterface;
+use Ratchet\WebSocket\MessageCallableInterface;
 use Ratchet\WebSocket\Version\RFC6455\HandshakeVerifier;
 use Ratchet\WebSocket\Version\RFC6455\Message;
 use Ratchet\WebSocket\Version\RFC6455\Frame;
@@ -81,7 +82,7 @@ class RFC6455 implements VersionInterface {
      * @param  \Ratchet\MessageInterface    $coalescedCallback
      * @return \Ratchet\WebSocket\Version\RFC6455\Connection
      */
-    public function upgradeConnection(ConnectionInterface $conn, MessageInterface $coalescedCallback) {
+    public function upgradeConnection(ConnectionInterface $conn, MessageCallableInterface $coalescedCallback) {
         $upgraded = new Connection($conn);
 
         if (!isset($upgraded->WebSocket)) {

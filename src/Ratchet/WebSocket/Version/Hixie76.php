@@ -1,6 +1,7 @@
 <?php
 namespace Ratchet\WebSocket\Version;
 use Ratchet\ConnectionInterface;
+use Ratchet\WebSocket\MessageCallableInterface;
 use Ratchet\WebSocket\Version\Hixie76\Connection;
 use Guzzle\Http\Message\RequestInterface;
 use Guzzle\Http\Message\Response;
@@ -61,7 +62,7 @@ class Hixie76 implements VersionInterface {
     /**
      * {@inheritdoc}
      */
-    public function upgradeConnection(ConnectionInterface $conn, MessageInterface $coalescedCallback) {
+    public function upgradeConnection(ConnectionInterface $conn, MessageCallableInterface $coalescedCallback) {
         $upgraded = new Connection($conn);
 
         if (!isset($upgraded->WebSocket)) {

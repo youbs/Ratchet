@@ -35,7 +35,7 @@ interface VersionInterface extends MessageCallableInterface {
      * @param  \Ratchet\WebSocket\Version\MessageInterface $coalescedCallback
      * @return \Ratchet\ConnectionInterface
      */
-    function upgradeConnection(ConnectionInterface $conn, MessageInterface $coalescedCallback);
+    function upgradeConnection(ConnectionInterface $conn, MessageCallableInterface $coalescedCallback);
 
     /**
      * @return MessageInterface
