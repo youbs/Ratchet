@@ -1,81 +1,90 @@
 <?php
+
 namespace Ratchet\WebSocket\Version\RFC6455;
+
 use Ratchet\WebSocket\Version\FrameInterface;
 
-class Frame implements FrameInterface {
-    const OP_CONTINUE =  0;
-    const OP_TEXT     =  1;
-    const OP_BINARY   =  2;
-    const OP_CLOSE    =  8;
-    const OP_PING     =  9;
-    const OP_PONG     = 10;
+class Frame implements FrameInterface
+{
+    const OP_CONTINUE = 0;
+    const OP_TEXT = 1;
+    const OP_BINARY = 2;
+    const OP_CLOSE = 8;
+    const OP_PING = 9;
+    const OP_PONG = 10;
 
-    const CLOSE_NORMAL      = 1000;
-    const CLOSE_GOING_AWAY  = 1001;
-    const CLOSE_PROTOCOL    = 1002;
-    const CLOSE_BAD_DATA    = 1003;
-    const CLOSE_NO_STATUS   = 1005;
-    const CLOSE_ABNORMAL    = 1006;
+    const CLOSE_NORMAL = 1000;
+    const CLOSE_GOING_AWAY = 1001;
+    const CLOSE_PROTOCOL = 1002;
+    const CLOSE_BAD_DATA = 1003;
+    const CLOSE_NO_STATUS = 1005;
+    const CLOSE_ABNORMAL = 1006;
     const CLOSE_BAD_PAYLOAD = 1007;
-    const CLOSE_POLICY      = 1008;
-    const CLOSE_TOO_BIG     = 1009;
-    const CLOSE_MAND_EXT    = 1010;
-    const CLOSE_SRV_ERR     = 1011;
-    const CLOSE_TLS         = 1015;
+    const CLOSE_POLICY = 1008;
+    const CLOSE_TOO_BIG = 1009;
+    const CLOSE_MAND_EXT = 1010;
+    const CLOSE_SRV_ERR = 1011;
+    const CLOSE_TLS = 1015;
 
     const MASK_LENGTH = 4;
 
     /**
-     * The contents of the frame
+     * The contents of the frame.
+     *
      * @var string
      */
     protected $data = '';
 
     /**
-     * Number of bytes received from the frame
+     * Number of bytes received from the frame.
+     *
      * @var int
      */
     public $bytesRecvd = 0;
 
     /**
-     * Number of bytes in the payload (as per framing protocol)
+     * Number of bytes in the payload (as per framing protocol).
+     *
      * @var int
      */
     protected $defPayLen = -1;
 
     /**
      * If the frame is coalesced this is true
-     * This is to prevent doing math every time ::isCoalesced is called
-     * @var boolean
+     * This is to prevent doing math every time ::isCoalesced is called.
+     *
+     * @var bool
      */
     private $isCoalesced = false;
 
     /**
-     * The unpacked first byte of the frame
+     * The unpacked first byte of the frame.
+     *
      * @var int
      */
     protected $firstByte = -1;
 
     /**
-     * The unpacked second byte of the frame
+     * The unpacked second byte of the frame.
+     *
      * @var int
      */
     protected $secondByte = -1;
-
 
     /**
      * @param string|null $payload
      * @param bool        $final
      * @param int         $opcode
      */
-    public function __construct($payload = null, $final = true, $opcode = 1) {
+    public function __construct($payload = null, $final = true, $opcode = 1)
+    {
         if (null === $payload) {
             return;
         }
 
-        $this->defPayLen   = strlen($payload);
-        $this->firstByte   = ($final ? 128 : 0) + $opcode;
-        $this->secondByte  = $this->defPayLen;
+        $this->defPayLen = strlen($payload);
+        $this->firstByte = ($final ? 128 : 0) + $opcode;
+        $this->secondByte = $this->defPayLen;
         $this->isCoalesced = true;
 
         $ext = '';
@@ -87,21 +96,22 @@ class Frame implements FrameInterface {
             $this->secondByte = 126;
         }
 
-        $this->data       = chr($this->firstByte) . chr($this->secondByte) . $ext . $payload;
+        $this->data = chr($this->firstByte).chr($this->secondByte).$ext.$payload;
         $this->bytesRecvd = 2 + strlen($ext) + $this->defPayLen;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function isCoalesced() {
+    public function isCoalesced()
+    {
         if (true === $this->isCoalesced) {
             return true;
         }
 
         try {
             $payload_length = $this->getPayloadLength();
-            $payload_start  = $this->getPayloadStartingByte();
+            $payload_start = $this->getPayloadStartingByte();
         } catch (\UnderflowException $e) {
             return false;
         }
@@ -114,7 +124,8 @@ class Frame implements FrameInterface {
     /**
      * {@inheritdoc}
      */
-    public function addBuffer($buf) {
+    public function addBuffer($buf)
+    {
         $len = strlen($buf);
 
         $this->data       .= $buf;
@@ -132,7 +143,8 @@ class Frame implements FrameInterface {
     /**
      * {@inheritdoc}
      */
-    public function isFinal() {
+    public function isFinal()
+    {
         if (-1 === $this->firstByte) {
             throw new \UnderflowException('Not enough bytes received to determine if this is the final frame in message');
         }
@@ -141,10 +153,12 @@ class Frame implements FrameInterface {
     }
 
     /**
-     * @return boolean
+     * @return bool
+     *
      * @throws \UnderflowException
      */
-    public function getRsv1() {
+    public function getRsv1()
+    {
         if (-1 === $this->firstByte) {
             throw new \UnderflowException('Not enough bytes received to determine reserved bit');
         }
@@ -153,10 +167,12 @@ class Frame implements FrameInterface {
     }
 
     /**
-     * @return boolean
+     * @return bool
+     *
      * @throws \UnderflowException
      */
-    public function getRsv2() {
+    public function getRsv2()
+    {
         if (-1 === $this->firstByte) {
             throw new \UnderflowException('Not enough bytes received to determine reserved bit');
         }
@@ -165,10 +181,12 @@ class Frame implements FrameInterface {
     }
 
     /**
-     * @return boolean
+     * @return bool
+     *
      * @throws \UnderflowException
      */
-    public function getRsv3() {
+    public function getRsv3()
+    {
         if (-1 === $this->firstByte) {
             throw new \UnderflowException('Not enough bytes received to determine reserved bit');
         }
@@ -179,7 +197,8 @@ class Frame implements FrameInterface {
     /**
      * {@inheritdoc}
      */
-    public function isMasked() {
+    public function isMasked()
+    {
         if (-1 === $this->secondByte) {
             throw new \UnderflowException("Not enough bytes received ({$this->bytesRecvd}) to determine if mask is set");
         }
@@ -190,12 +209,13 @@ class Frame implements FrameInterface {
     /**
      * {@inheritdoc}
      */
-    public function getMaskingKey() {
+    public function getMaskingKey()
+    {
         if (!$this->isMasked()) {
             return '';
         }
 
-        $start  = 1 + $this->getNumPayloadBytes();
+        $start = 1 + $this->getNumPayloadBytes();
 
         if ($this->bytesRecvd < $start + static::MASK_LENGTH) {
             throw new \UnderflowException('Not enough data buffered to calculate the masking key');
@@ -205,13 +225,15 @@ class Frame implements FrameInterface {
     }
 
     /**
-     * Create a 4 byte masking key
+     * Create a 4 byte masking key.
+     *
      * @return string
      */
-    public function generateMaskingKey() {
+    public function generateMaskingKey()
+    {
         $mask = '';
 
-        for ($i = 1; $i <= static::MASK_LENGTH; $i++) {
+        for ($i = 1; $i <= static::MASK_LENGTH; ++$i) {
             $mask .= chr(rand(32, 126));
         }
 
@@ -219,44 +241,51 @@ class Frame implements FrameInterface {
     }
 
     /**
-     * Apply a mask to the payload
+     * Apply a mask to the payload.
+     *
      * @param string|null If NULL is passed a masking key will be generated
+     *
      * @throws \OutOfBoundsException
      * @throws \InvalidArgumentException If there is an issue with the given masking key
+     *
      * @return Frame
      */
-    public function maskPayload($maskingKey = null) {
+    public function maskPayload($maskingKey = null)
+    {
         if (null === $maskingKey) {
             $maskingKey = $this->generateMaskingKey();
         }
 
         if (static::MASK_LENGTH !== strlen($maskingKey)) {
-            throw new \InvalidArgumentException("Masking key must be " . static::MASK_LENGTH ." characters");
+            throw new \InvalidArgumentException('Masking key must be '.static::MASK_LENGTH.' characters');
         }
 
         if (extension_loaded('mbstring') && true !== mb_check_encoding($maskingKey, 'US-ASCII')) {
-            throw new \OutOfBoundsException("Masking key MUST be ASCII");
+            throw new \OutOfBoundsException('Masking key MUST be ASCII');
         }
 
         $this->unMaskPayload();
 
         $this->secondByte = $this->secondByte | 128;
-        $this->data[1]    = chr($this->secondByte);
+        $this->data[1] = chr($this->secondByte);
 
         $this->data = substr_replace($this->data, $maskingKey, $this->getNumPayloadBytes() + 1, 0);
 
         $this->bytesRecvd += static::MASK_LENGTH;
-        $this->data        = substr_replace($this->data, $this->applyMask($maskingKey), $this->getPayloadStartingByte(), $this->getPayloadLength());
+        $this->data = substr_replace($this->data, $this->applyMask($maskingKey), $this->getPayloadStartingByte(), $this->getPayloadLength());
 
         return $this;
     }
 
     /**
-     * Remove a mask from the payload
+     * Remove a mask from the payload.
+     *
      * @throws \UnderFlowException If the frame is not coalesced
+     *
      * @return Frame
      */
-    public function unMaskPayload() {
+    public function unMaskPayload()
+    {
         if (!$this->isCoalesced()) {
             throw new \UnderflowException('Frame must be coalesced before applying mask');
         }
@@ -273,19 +302,23 @@ class Frame implements FrameInterface {
         $this->data = substr_replace($this->data, '', $this->getNumPayloadBytes() + 1, static::MASK_LENGTH);
 
         $this->bytesRecvd -= static::MASK_LENGTH;
-        $this->data        = substr_replace($this->data, $this->applyMask($maskingKey), $this->getPayloadStartingByte(), $this->getPayloadLength());
+        $this->data = substr_replace($this->data, $this->applyMask($maskingKey), $this->getPayloadStartingByte(), $this->getPayloadLength());
 
         return $this;
     }
 
     /**
-     * Apply a mask to a string or the payload of the instance
-     * @param string $maskingKey   The 4 character masking key to be applied
-     * @param string|null $payload A string to mask or null to use the payload
+     * Apply a mask to a string or the payload of the instance.
+     *
+     * @param string      $maskingKey The 4 character masking key to be applied
+     * @param string|null $payload    A string to mask or null to use the payload
+     *
      * @throws \UnderflowException If using the payload but enough hasn't been buffered
-     * @return string              The masked string
+     *
+     * @return string The masked string
      */
-    public function applyMask($maskingKey, $payload = null) {
+    public function applyMask($maskingKey, $payload = null)
+    {
         if (null === $payload) {
             if (!$this->isCoalesced()) {
                 throw new \UnderflowException('Frame must be coalesced to apply a mask');
@@ -295,7 +328,7 @@ class Frame implements FrameInterface {
         }
 
         $applied = '';
-        for ($i = 0, $len = strlen($payload); $i < $len; $i++) {
+        for ($i = 0, $len = strlen($payload); $i < $len; ++$i) {
             $applied .= $payload[$i] ^ $maskingKey[$i % static::MASK_LENGTH];
         }
 
@@ -305,7 +338,8 @@ class Frame implements FrameInterface {
     /**
      * {@inheritdoc}
      */
-    public function getOpcode() {
+    public function getOpcode()
+    {
         if (-1 === $this->firstByte) {
             throw new \UnderflowException('Not enough bytes received to determine opcode');
         }
@@ -314,11 +348,14 @@ class Frame implements FrameInterface {
     }
 
     /**
-     * Gets the decimal value of bits 9 (10th) through 15 inclusive
+     * Gets the decimal value of bits 9 (10th) through 15 inclusive.
+     *
      * @return int
+     *
      * @throws \UnderflowException If the buffer doesn't have enough data to determine this
      */
-    protected function getFirstPayloadVal() {
+    protected function getFirstPayloadVal()
+    {
         if (-1 === $this->secondByte) {
             throw new \UnderflowException('Not enough bytes received');
         }
@@ -328,9 +365,11 @@ class Frame implements FrameInterface {
 
     /**
      * @return int (7|23|71) Number of bits defined for the payload length in the fame
+     *
      * @throws \UnderflowException
      */
-    protected function getNumPayloadBits() {
+    protected function getNumPayloadBits()
+    {
         if (-1 === $this->secondByte) {
             throw new \UnderflowException('Not enough bytes received');
         }
@@ -357,17 +396,20 @@ class Frame implements FrameInterface {
     }
 
     /**
-     * This just returns the number of bytes used in the frame to describe the payload length (as opposed to # of bits)
+     * This just returns the number of bytes used in the frame to describe the payload length (as opposed to # of bits).
+     *
      * @see getNumPayloadBits
      */
-    protected function getNumPayloadBytes() {
+    protected function getNumPayloadBytes()
+    {
         return (1 + $this->getNumPayloadBits()) / 8;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getPayloadLength() {
+    public function getPayloadLength()
+    {
         if ($this->defPayLen !== -1) {
             return $this->defPayLen;
         }
@@ -384,7 +426,7 @@ class Frame implements FrameInterface {
         }
 
         $len = 0;
-        for ($i = 2; $i <= $byte_length; $i++) {
+        for ($i = 2; $i <= $byte_length; ++$i) {
             $len <<= 8;
             $len  += ord($this->data[$i]);
         }
@@ -397,15 +439,18 @@ class Frame implements FrameInterface {
     /**
      * {@inheritdoc}
      */
-    public function getPayloadStartingByte() {
+    public function getPayloadStartingByte()
+    {
         return 1 + $this->getNumPayloadBytes() + ($this->isMasked() ? static::MASK_LENGTH : 0);
     }
 
     /**
      * {@inheritdoc}
+     *
      * @todo Consider not checking mask, always returning the payload, masked or not
      */
-    public function getPayload() {
+    public function getPayload()
+    {
         if (!$this->isCoalesced()) {
             throw new \UnderflowException('Can not return partial message');
         }
@@ -420,26 +465,31 @@ class Frame implements FrameInterface {
     }
 
     /**
-     * Get the raw contents of the frame
+     * Get the raw contents of the frame.
+     *
      * @todo This is untested, make sure the substr is right - trying to return the frame w/o the overflow
      */
-    public function getContents() {
+    public function getContents()
+    {
         return substr($this->data, 0, $this->getPayloadStartingByte() + $this->getPayloadLength());
     }
 
     /**
      * Sometimes clients will concatenate more than one frame over the wire
-     * This method will take the extra bytes off the end and return them
+     * This method will take the extra bytes off the end and return them.
+     *
      * @todo Consider returning new Frame
+     *
      * @return string
      */
-    public function extractOverflow() {
+    public function extractOverflow()
+    {
         if ($this->isCoalesced()) {
-            $endPoint  = $this->getPayloadLength();
+            $endPoint = $this->getPayloadLength();
             $endPoint += $this->getPayloadStartingByte();
 
             if ($this->bytesRecvd > $endPoint) {
-                $overflow   = substr($this->data, $endPoint);
+                $overflow = substr($this->data, $endPoint);
                 $this->data = substr($this->data, 0, $endPoint);
 
                 return $overflow;

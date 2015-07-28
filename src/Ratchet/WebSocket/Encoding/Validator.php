@@ -1,10 +1,12 @@
 <?php
+
 namespace Ratchet\WebSocket\Encoding;
 
 /**
- * This class handled encoding validation
+ * This class handled encoding validation.
  */
-class Validator {
+class Validator
+{
     const UTF8_ACCEPT = 0;
     const UTF8_REJECT = 1;
 
@@ -31,29 +33,34 @@ class Validator {
         1,3,1,1,1,1,1,3,1,3,1,1,1,1,1,1,1,3,1,1,1,1,1,1,1,1,1,1,1,1,1,1, # s7..s8
     );
 
-    /**
-     * Lookup if mbstring is available
-     * @var bool
-     */
+     /**
+      * Lookup if mbstring is available.
+      *
+      * @var bool
+      */
      private $hasMbString = false;
 
      /**
-      * Lookup if iconv is available
+      * Lookup if iconv is available.
+      *
       * @var bool
       */
      private $hasIconv = false;
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->hasMbString = extension_loaded('mbstring');
-        $this->hasIconv    = extension_loaded('iconv');
+        $this->hasIconv = extension_loaded('iconv');
     }
 
     /**
-     * @param  string $str     The value to check the encoding
-     * @param  string $against The type of encoding to check against
+     * @param string $str     The value to check the encoding
+     * @param string $against The type of encoding to check against
+     *
      * @return bool
      */
-    public function checkEncoding($str, $against) {
+    public function checkEncoding($str, $against)
+    {
         if ('UTF-8' == $against) {
             return $this->isUtf8($str);
         }
@@ -67,7 +74,8 @@ class Validator {
         return true;
     }
 
-    protected function isUtf8($str) {
+    protected function isUtf8($str)
+    {
         if ($this->hasMbString) {
             if (false === mb_check_encoding($str, 'UTF-8')) {
                 return false;
@@ -80,7 +88,7 @@ class Validator {
 
         $state = static::UTF8_ACCEPT;
 
-        for ($i = 0, $len   = strlen($str); $i < $len; $i++) {
+        for ($i = 0, $len = strlen($str); $i < $len; ++$i) {
             $state = static::$dfa[256 + ($state << 4) + static::$dfa[ord($str[$i])]];
 
             if (static::UTF8_REJECT === $state) {

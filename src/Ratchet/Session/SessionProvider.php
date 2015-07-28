@@ -1,5 +1,7 @@
 <?php
+
 namespace Ratchet\Session;
+
 use Ratchet\MessageComponentInterface;
 use Ratchet\ConnectionInterface;
 use Ratchet\WebSocket\WsServerInterface;
@@ -12,22 +14,25 @@ use Symfony\Component\HttpFoundation\Session\Storage\Handler\NullSessionHandler;
  * This component will allow access to session data from your website for each user connected
  * Symfony HttpFoundation is required for this component to work
  * Your website must also use Symfony HttpFoundation Sessions to read your sites session data
- * If your are not using at least PHP 5.4 you must include a SessionHandlerInterface stub (is included in Symfony HttpFoundation, loaded w/ composer)
+ * If your are not using at least PHP 5.4 you must include a SessionHandlerInterface stub (is included in Symfony HttpFoundation, loaded w/ composer).
  */
-class SessionProvider implements MessageComponentInterface, WsServerInterface {
+class SessionProvider implements MessageComponentInterface, WsServerInterface
+{
     /**
      * @var \Ratchet\MessageComponentInterface
      */
     protected $_app;
 
     /**
-     * Selected handler storage assigned by the developer
+     * Selected handler storage assigned by the developer.
+     *
      * @var \SessionHandlerInterface
      */
     protected $_handler;
 
     /**
-     * Null storage handler if no previous session was found
+     * Null storage handler if no previous session was found.
+     *
      * @var \SessionHandlerInterface
      */
     protected $_null;
@@ -42,12 +47,14 @@ class SessionProvider implements MessageComponentInterface, WsServerInterface {
      * @param \SessionHandlerInterface                    $handler
      * @param array                                       $options
      * @param \Ratchet\Session\Serialize\HandlerInterface $serializer
+     *
      * @throws \RuntimeException
      */
-    public function __construct(MessageComponentInterface $app, \SessionHandlerInterface $handler, array $options = array(), HandlerInterface $serializer = null) {
-        $this->_app     = $app;
+    public function __construct(MessageComponentInterface $app, \SessionHandlerInterface $handler, array $options = array(), HandlerInterface $serializer = null)
+    {
+        $this->_app = $app;
         $this->_handler = $handler;
-        $this->_null    = new NullSessionHandler;
+        $this->_null = new NullSessionHandler();
 
         ini_set('session.auto_start', 0);
         ini_set('session.cache_limiter', '');
@@ -56,12 +63,12 @@ class SessionProvider implements MessageComponentInterface, WsServerInterface {
         $this->setOptions($options);
 
         if (null === $serializer) {
-            $serialClass = __NAMESPACE__ . "\\Serialize\\{$this->toClassCase(ini_get('session.serialize_handler'))}Handler"; // awesome/terrible hack, eh?
+            $serialClass = __NAMESPACE__."\\Serialize\\{$this->toClassCase(ini_get('session.serialize_handler'))}Handler"; // awesome/terrible hack, eh?
             if (!class_exists($serialClass)) {
                 throw new \RuntimeException('Unable to parse session serialize handler');
             }
 
-            $serializer = new $serialClass;
+            $serializer = new $serialClass();
         }
 
         $this->_serializer = $serializer;
@@ -70,7 +77,8 @@ class SessionProvider implements MessageComponentInterface, WsServerInterface {
     /**
      * {@inheritdoc}
      */
-    function onOpen(ConnectionInterface $conn) {
+    public function onOpen(ConnectionInterface $conn)
+    {
         if (!isset($conn->WebSocket) || null === ($id = $conn->WebSocket->request->getCookie(ini_get('session.name')))) {
             $saveHandler = $this->_null;
             $id = '';
@@ -90,14 +98,16 @@ class SessionProvider implements MessageComponentInterface, WsServerInterface {
     /**
      * {@inheritdoc}
      */
-    function onMessage(ConnectionInterface $from, $msg) {
+    public function onMessage(ConnectionInterface $from, $msg)
+    {
         return $this->_app->onMessage($from, $msg);
     }
 
     /**
      * {@inheritdoc}
      */
-    function onClose(ConnectionInterface $conn) {
+    public function onClose(ConnectionInterface $conn)
+    {
         // "close" session for Connection
 
         return $this->_app->onClose($conn);
@@ -106,14 +116,16 @@ class SessionProvider implements MessageComponentInterface, WsServerInterface {
     /**
      * {@inheritdoc}
      */
-    function onError(ConnectionInterface $conn, \Exception $e) {
+    public function onError(ConnectionInterface $conn, \Exception $e)
+    {
         return $this->_app->onError($conn, $e);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getSubProtocols() {
+    public function getSubProtocols()
+    {
         if ($this->_app instanceof WsServerInterface) {
             return $this->_app->getSubProtocols();
         } else {
@@ -123,11 +135,14 @@ class SessionProvider implements MessageComponentInterface, WsServerInterface {
 
     /**
      * Set all the php session. ini options
-     * © Symfony
+     * © Symfony.
+     *
      * @param array $options
+     *
      * @return array
      */
-    protected function setOptions(array $options) {
+    protected function setOptions(array $options)
+    {
         $all = array(
             'auto_start', 'cache_limiter', 'cookie_domain', 'cookie_httponly',
             'cookie_lifetime', 'cookie_path', 'cookie_secure',
@@ -137,7 +152,7 @@ class SessionProvider implements MessageComponentInterface, WsServerInterface {
             'serialize_handler', 'use_cookies',
             'use_only_cookies', 'use_trans_sid', 'upload_progress.enabled',
             'upload_progress.cleanup', 'upload_progress.prefix', 'upload_progress.name',
-            'upload_progress.freq', 'upload_progress.min-freq', 'url_rewriter.tags'
+            'upload_progress.freq', 'upload_progress.min-freq', 'url_rewriter.tags',
         );
 
         foreach ($all as $key) {
@@ -153,9 +168,11 @@ class SessionProvider implements MessageComponentInterface, WsServerInterface {
 
     /**
      * @param string $langDef Input to convert
+     *
      * @return string
      */
-    protected function toClassCase($langDef) {
+    protected function toClassCase($langDef)
+    {
         return str_replace(' ', '', ucwords(str_replace('_', ' ', $langDef)));
     }
 }

@@ -1,29 +1,34 @@
 <?php
+
 namespace Ratchet\WebSocket\Version;
 
-interface FrameInterface extends DataInterface {
+interface FrameInterface extends DataInterface
+{
     /**
-     * Add incoming data to the frame from peer
+     * Add incoming data to the frame from peer.
+     *
      * @param string
      */
-    function addBuffer($buf);
+    public function addBuffer($buf);
 
     /**
      * Is this the final frame in a fragmented message?
+     *
      * @return bool
      */
-    function isFinal();
+    public function isFinal();
 
     /**
      * Is the payload masked?
+     *
      * @return bool
      */
-    function isMasked();
+    public function isMasked();
 
     /**
      * @return int
      */
-    function getOpcode();
+    public function getOpcode();
 
     /**
      * @return int
@@ -31,8 +36,9 @@ interface FrameInterface extends DataInterface {
     //function getReceivedPayloadLength();
 
     /**
-     * 32-big string
+     * 32-big string.
+     *
      * @return string
      */
-    function getMaskingKey();
+    public function getMaskingKey();
 }
