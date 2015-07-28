@@ -17,7 +17,10 @@ class TopicManager implements WsServerInterface, WampServerInterface
      */
     protected $topicLookup = array();
 
-    public function __construct(WampServerInterface $app)
+    /**
+     * @param WampServerInterface $app
+     */
+    public function setWampApplication(WampServerInterface $app)
     {
         $this->app = $app;
     }
@@ -116,7 +119,7 @@ class TopicManager implements WsServerInterface, WampServerInterface
      *
      * @return Topic
      */
-    protected function getTopic($topic)
+    public function getTopic($topic)
     {
         if (!array_key_exists($topic, $this->topicLookup)) {
             $this->topicLookup[$topic] = new Topic($topic);

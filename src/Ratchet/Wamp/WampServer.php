@@ -26,9 +26,9 @@ class WampServer implements MessageComponentInterface, WsServerInterface
      * If you're looking at the source code, look in the __construct of this
      *  class and use that to make your application instead of using this.
      */
-    public function __construct(WampServerInterface $app)
+    public function __construct(WampServerInterface $app, TopicManager $topicManager)
     {
-        $this->wampProtocol = new ServerProtocol(new TopicManager($app));
+        $this->wampProtocol = new ServerProtocol($topicManager);
     }
 
     /**
