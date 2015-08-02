@@ -1,6 +1,7 @@
 <?php
+
 namespace Ratchet\Http;
-use Ratchet\Http\Router;
+
 use Ratchet\WebSocket\WsServerInterface;
 use Symfony\Component\Routing\Exception\ResourceNotFoundException;
 use Symfony\Component\Routing\Matcher\UrlMatcherInterface;
@@ -8,21 +9,23 @@ use Symfony\Component\Routing\Matcher\UrlMatcherInterface;
 /**
  * @covers Ratchet\Http\Router
  */
-class RouterTest extends \PHPUnit_Framework_TestCase {
+class RouterTest extends \PHPUnit_Framework_TestCase
+{
     protected $_router;
     protected $_matcher;
     protected $_conn;
     protected $_req;
 
-    public function setUp() {
+    public function setUp()
+    {
         $queryMock = $this->getMock('Guzzle\Http\QueryString');
         $queryMock
             ->expects($this->any())
             ->method('getAll')
             ->will($this->returnValue(array()));
 
-        $this->_conn    = $this->getMock('\Ratchet\ConnectionInterface');
-        $this->_req     = $this->getMock('\Guzzle\Http\Message\RequestInterface');
+        $this->_conn = $this->getMock('\Ratchet\ConnectionInterface');
+        $this->_req = $this->getMock('\Guzzle\Http\Message\RequestInterface');
         $this->_req
             ->expects($this->any())
             ->method('getQuery')
@@ -32,32 +35,36 @@ class RouterTest extends \PHPUnit_Framework_TestCase {
             ->expects($this->any())
             ->method('getContext')
             ->will($this->returnValue($this->getMock('Symfony\Component\Routing\RequestContext')));
-        $this->_router  = new Router($this->_matcher);
+        $this->_router = new Router($this->_matcher);
 
         $this->_req->expects($this->any())->method('getPath')->will($this->returnValue('/whatever'));
     }
 
-    public function testFourOhFour() {
+    public function testFourOhFour()
+    {
         $this->_conn->expects($this->once())->method('close');
 
-        $nope = new ResourceNotFoundException;
+        $nope = new ResourceNotFoundException();
         $this->_matcher->expects($this->any())->method('match')->will($this->throwException($nope));
 
         $this->_router->onOpen($this->_conn, $this->_req);
     }
 
-    public function testNullRequest() {
+    public function testNullRequest()
+    {
         $this->setExpectedException('\UnexpectedValueException');
         $this->_router->onOpen($this->_conn);
     }
 
-    public function testControllerIsMessageComponentInterface() {
+    public function testControllerIsMessageComponentInterface()
+    {
         $this->setExpectedException('\UnexpectedValueException');
-        $this->_matcher->expects($this->any())->method('match')->will($this->returnValue(array('_controller' => new \StdClass)));
+        $this->_matcher->expects($this->any())->method('match')->will($this->returnValue(array('_controller' => new \StdClass())));
         $this->_router->onOpen($this->_conn, $this->_req);
     }
 
-    public function testControllerOnOpen() {
+    public function testControllerOnOpen()
+    {
         $controller = $this->getMockBuilder('\Ratchet\WebSocket\WsServer')->disableOriginalConstructor()->getMock();
         $this->_matcher->expects($this->any())->method('match')->will($this->returnValue(array('_controller' => $controller)));
         $this->_router->onOpen($this->_conn, $this->_req);
@@ -69,7 +76,8 @@ class RouterTest extends \PHPUnit_Framework_TestCase {
         $this->_router->onOpen($this->_conn, $this->_req);
     }
 
-    public function testControllerOnMessageBubbles() {
+    public function testControllerOnMessageBubbles()
+    {
         $message = "The greatest trick the Devil ever pulled was convincing the world he didn't exist";
         $controller = $this->getMockBuilder('\Ratchet\WebSocket\WsServer')->disableOriginalConstructor()->getMock();
         $controller->expects($this->once())->method('onMessage')->with($this->_conn, $message);
@@ -79,7 +87,8 @@ class RouterTest extends \PHPUnit_Framework_TestCase {
         $this->_router->onMessage($this->_conn, $message);
     }
 
-    public function testControllerOnCloseBubbles() {
+    public function testControllerOnCloseBubbles()
+    {
         $controller = $this->getMockBuilder('\Ratchet\WebSocket\WsServer')->disableOriginalConstructor()->getMock();
         $controller->expects($this->once())->method('onClose')->with($this->_conn);
 
@@ -88,8 +97,9 @@ class RouterTest extends \PHPUnit_Framework_TestCase {
         $this->_router->onClose($this->_conn);
     }
 
-    public function testControllerOnErrorBubbles() {
-        $e= new \Exception('One cannot be betrayed if one has no exceptions');
+    public function testControllerOnErrorBubbles()
+    {
+        $e = new \Exception('One cannot be betrayed if one has no exceptions');
         $controller = $this->getMockBuilder('\Ratchet\WebSocket\WsServer')->disableOriginalConstructor()->getMock();
         $controller->expects($this->once())->method('onError')->with($this->_conn, $e);
 
@@ -98,10 +108,11 @@ class RouterTest extends \PHPUnit_Framework_TestCase {
         $this->_router->onError($this->_conn, $e);
     }
 
-    public function testRouterGeneratesRouteParameters() {
+    public function testRouterGeneratesRouteParameters()
+    {
         /** @var $controller WsServerInterface */
         $controller = $this->getMockBuilder('\Ratchet\WebSocket\WsServer')->disableOriginalConstructor()->getMock();
-        /** @var $matcher UrlMatcherInterface */
+        /* @var $matcher UrlMatcherInterface */
         $this->_matcher->expects($this->any())->method('match')->will(
             $this->returnValue(array('_controller' => $controller, 'foo' => 'bar', 'baz' => 'qux'))
         );
@@ -120,13 +131,14 @@ class RouterTest extends \PHPUnit_Framework_TestCase {
         $this->assertEquals(array('foo' => 'bar', 'baz' => 'qux'), $request->getQuery()->getAll());
     }
 
-    public function testQueryParams() {
+    public function testQueryParams()
+    {
         $controller = $this->getMockBuilder('\Ratchet\WebSocket\WsServer')->disableOriginalConstructor()->getMock();
         $this->_matcher->expects($this->any())->method('match')->will(
             $this->returnValue(array('_controller' => $controller, 'foo' => 'bar', 'baz' => 'qux'))
         );
 
-        $conn    = $this->getMock('Ratchet\Mock\Connection');
+        $conn = $this->getMock('Ratchet\Mock\Connection');
         $request = $this->getMock('Guzzle\Http\Message\Request', array('getPath'), array('GET', ''), '', false);
 
         $request->setHeaderFactory($this->getMock('Guzzle\Http\Message\Header\HeaderFactoryInterface'));

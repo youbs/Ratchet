@@ -2,16 +2,16 @@
 
 namespace Ratchet\WebSocket\Version;
 
-use Ratchet\ConnectionInterface;
-use Ratchet\MessageInterface;
-use Ratchet\WebSocket\Version\RFC6455\HandshakeVerifier;
-use Ratchet\WebSocket\Version\RFC6455\Message;
-use Ratchet\WebSocket\Version\RFC6455\Frame;
-use Ratchet\WebSocket\Version\RFC6455\Connection;
-use Ratchet\WebSocket\Encoding\ValidatorInterface;
-use Ratchet\WebSocket\Encoding\Validator;
 use Guzzle\Http\Message\RequestInterface;
 use Guzzle\Http\Message\Response;
+use Ratchet\ConnectionInterface;
+use Ratchet\MessageInterface;
+use Ratchet\WebSocket\Encoding\Validator;
+use Ratchet\WebSocket\Encoding\ValidatorInterface;
+use Ratchet\WebSocket\Version\RFC6455\Connection;
+use Ratchet\WebSocket\Version\RFC6455\Frame;
+use Ratchet\WebSocket\Version\RFC6455\HandshakeVerifier;
+use Ratchet\WebSocket\Version\RFC6455\Message;
 
 /**
  * The latest version of the WebSocket protocol.
@@ -249,7 +249,7 @@ class RFC6455 implements VersionInterface
      */
     public function sign($key)
     {
-        return base64_encode(sha1($key.static::GUID, true));
+        return base64_encode(sha1($key . static::GUID, true));
     }
 
     /**

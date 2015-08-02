@@ -2,8 +2,8 @@
 
 namespace Ratchet\Server;
 
-use Ratchet\MessageComponentInterface;
 use Ratchet\ConnectionInterface;
+use Ratchet\MessageComponentInterface;
 
 class IpBlackList implements MessageComponentInterface
 {

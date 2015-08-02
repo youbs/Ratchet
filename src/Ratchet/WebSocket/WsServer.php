@@ -2,11 +2,11 @@
 
 namespace Ratchet\WebSocket;
 
-use Ratchet\MessageComponentInterface;
-use Ratchet\ConnectionInterface;
-use Ratchet\Http\HttpServerInterface;
 use Guzzle\Http\Message\RequestInterface;
 use Guzzle\Http\Message\Response;
+use Ratchet\ConnectionInterface;
+use Ratchet\Http\HttpServerInterface;
+use Ratchet\MessageComponentInterface;
 use Ratchet\WebSocket\Encoding\ToggleableValidator;
 
 /**
@@ -69,8 +69,7 @@ class WsServer implements HttpServerInterface
         $this->versioner
             ->enableVersion(new Version\RFC6455($this->validator))
             ->enableVersion(new Version\HyBi10($this->validator))
-            ->enableVersion(new Version\Hixie76())
-        ;
+            ->enableVersion(new Version\Hixie76());
 
         $this->component = $component;
         $this->connections = new \SplObjectStorage();

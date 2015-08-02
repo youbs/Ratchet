@@ -1,23 +1,27 @@
 <?php
+
 namespace Ratchet\WebSocket\Version;
-use Ratchet\WebSocket\Version\Hixie76;
+
 use Ratchet\Http\HttpServer;
 use Ratchet\WebSocket\WsServer;
 
 /**
  * @covers Ratchet\WebSocket\Version\Hixie76
  */
-class Hixie76Test extends \PHPUnit_Framework_TestCase {
+class Hixie76Test extends \PHPUnit_Framework_TestCase
+{
     protected $_crlf = "\r\n";
     protected $_body = '6dW+XgKfWV0=';
 
     protected $_version;
 
-    public function setUp() {
-        $this->_version = new Hixie76;
+    public function setUp()
+    {
+        $this->_version = new Hixie76();
     }
 
-    public function testClassImplementsVersionInterface() {
+    public function testClassImplementsVersionInterface()
+    {
         $constraint = $this->isInstanceOf('\\Ratchet\\WebSocket\\Version\\VersionInterface');
         $this->assertThat($this->_version, $constraint);
     }
@@ -25,23 +29,26 @@ class Hixie76Test extends \PHPUnit_Framework_TestCase {
     /**
      * @dataProvider keyProvider
      */
-    public function testKeySigningForHandshake($accept, $key) {
+    public function testKeySigningForHandshake($accept, $key)
+    {
         $this->assertEquals($accept, $this->_version->generateKeyNumber($key));
     }
 
-    public static function keyProvider() {
+    public static function keyProvider()
+    {
         return array(
             array(179922739, '17  9 G`ZD9   2 2b 7X 3 /r90')
           , array(906585445, '3e6b263  4 17 80')
-          , array(0, '3e6b26341780')
+          , array(0, '3e6b26341780'),
         );
     }
 
-    public function headerProvider() {
+    public function headerProvider()
+    {
         $key1 = base64_decode('QTN+ICszNiA2IDJvICBWOG4gNyAgc08yODhZ');
         $key2 = base64_decode('TzEyICAgeVsgIFFSNDUgM1IgLiAyOFggNC00dn4z');
 
-        $headers  = "GET / HTTP/1.1";
+        $headers = 'GET / HTTP/1.1';
         $headers .= "Upgrade: WebSocket{$this->_crlf}";
         $headers .= "Connection: Upgrade{$this->_crlf}";
         $headers .= "Host: socketo.me{$this->_crlf}";
@@ -54,11 +61,12 @@ class Hixie76Test extends \PHPUnit_Framework_TestCase {
         return $headers;
     }
 
-    public function testNoUpgradeBeforeBody() {
+    public function testNoUpgradeBeforeBody()
+    {
         $headers = $this->headerProvider();
 
         $mockConn = $this->getMock('\Ratchet\ConnectionInterface');
-        $mockApp  = $this->getMock('\Ratchet\MessageComponentInterface');
+        $mockApp = $this->getMock('\Ratchet\MessageComponentInterface');
 
         $server = new HttpServer(new WsServer($mockApp));
         $server->onOpen($mockConn);
@@ -66,12 +74,13 @@ class Hixie76Test extends \PHPUnit_Framework_TestCase {
         $server->onMessage($mockConn, $headers);
     }
 
-    public function testTcpFragmentedUpgrade() {
+    public function testTcpFragmentedUpgrade()
+    {
         $headers = $this->headerProvider();
-        $body    = base64_decode($this->_body);
+        $body = base64_decode($this->_body);
 
         $mockConn = $this->getMock('\Ratchet\ConnectionInterface');
-        $mockApp  = $this->getMock('\Ratchet\MessageComponentInterface');
+        $mockApp = $this->getMock('\Ratchet\MessageComponentInterface');
 
         $server = new HttpServer(new WsServer($mockApp));
         $server->onOpen($mockConn);
@@ -81,14 +90,15 @@ class Hixie76Test extends \PHPUnit_Framework_TestCase {
         $server->onMessage($mockConn, $body . $this->_crlf . $this->_crlf);
     }
 
-    public function testTcpFragmentedBodyUpgrade() {
+    public function testTcpFragmentedBodyUpgrade()
+    {
         $headers = $this->headerProvider();
-        $body    = base64_decode($this->_body);
-        $body1   = substr($body, 0, 4);
-        $body2   = substr($body, 4);
+        $body = base64_decode($this->_body);
+        $body1 = substr($body, 0, 4);
+        $body2 = substr($body, 4);
 
         $mockConn = $this->getMock('\Ratchet\ConnectionInterface');
-        $mockApp  = $this->getMock('\Ratchet\MessageComponentInterface');
+        $mockApp = $this->getMock('\Ratchet\MessageComponentInterface');
 
         $server = new HttpServer(new WsServer($mockApp));
         $server->onOpen($mockConn);

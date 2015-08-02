@@ -3,10 +3,10 @@
 namespace Ratchet\Server;
 
 use Ratchet\MessageComponentInterface;
-use React\EventLoop\LoopInterface;
-use React\Socket\ServerInterface;
 use React\EventLoop\Factory as LoopFactory;
+use React\EventLoop\LoopInterface;
 use React\Socket\Server as Reactor;
+use React\Socket\ServerInterface;
 
 /**
  * Creates an open-ended socket to listen on a port for incoming connections.

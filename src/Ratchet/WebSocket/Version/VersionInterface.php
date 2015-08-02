@@ -2,9 +2,9 @@
 
 namespace Ratchet\WebSocket\Version;
 
-use Ratchet\MessageInterface;
-use Ratchet\ConnectionInterface;
 use Guzzle\Http\Message\RequestInterface;
+use Ratchet\ConnectionInterface;
+use Ratchet\MessageInterface;
 
 /**
  * A standard interface for interacting with the various version of the WebSocket protocol.

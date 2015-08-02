@@ -2,11 +2,11 @@
 
 namespace Ratchet\WebSocket\Version;
 
+use Guzzle\Http\Message\RequestInterface;
+use Guzzle\Http\Message\Response;
 use Ratchet\ConnectionInterface;
 use Ratchet\MessageInterface;
 use Ratchet\WebSocket\Version\Hixie76\Connection;
-use Guzzle\Http\Message\RequestInterface;
-use Guzzle\Http\Message\Response;
 use Ratchet\WebSocket\Version\Hixie76\Frame;
 
 /**
@@ -59,7 +59,7 @@ class Hixie76 implements VersionInterface
             'Upgrade' => 'WebSocket'
           , 'Connection' => 'Upgrade'
           , 'Sec-WebSocket-Origin' => (string) $request->getHeader('Origin')
-          , 'Sec-WebSocket-Location' => 'ws://'.(string) $request->getHeader('Host').$request->getPath(),
+          , 'Sec-WebSocket-Location' => 'ws://' . (string) $request->getHeader('Host') . $request->getPath(),
         );
 
         $response = new Response(101, $headers, $challenge);
@@ -127,7 +127,7 @@ class Hixie76 implements VersionInterface
     {
         return md5(
             pack('N', $this->generateKeyNumber($key1))
-          .pack('N', $this->generateKeyNumber($key2))
-          .$code, true);
+          . pack('N', $this->generateKeyNumber($key2))
+          . $code, true);
     }
 }

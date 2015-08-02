@@ -2,11 +2,11 @@
 
 namespace Ratchet\Session;
 
-use Ratchet\MessageComponentInterface;
 use Ratchet\ConnectionInterface;
-use Ratchet\WebSocket\WsServerInterface;
-use Ratchet\Session\Storage\VirtualSessionStorage;
+use Ratchet\MessageComponentInterface;
 use Ratchet\Session\Serialize\HandlerInterface;
+use Ratchet\Session\Storage\VirtualSessionStorage;
+use Ratchet\WebSocket\WsServerInterface;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpFoundation\Session\Storage\Handler\NullSessionHandler;
 
@@ -63,7 +63,7 @@ class SessionProvider implements MessageComponentInterface, WsServerInterface
         $this->setOptions($options);
 
         if (null === $serializer) {
-            $serialClass = __NAMESPACE__."\\Serialize\\{$this->toClassCase(ini_get('session.serialize_handler'))}Handler"; // awesome/terrible hack, eh?
+            $serialClass = __NAMESPACE__ . "\\Serialize\\{$this->toClassCase(ini_get('session.serialize_handler'))}Handler"; // awesome/terrible hack, eh?
             if (!class_exists($serialClass)) {
                 throw new \RuntimeException('Unable to parse session serialize handler');
             }

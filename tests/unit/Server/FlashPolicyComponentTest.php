@@ -1,19 +1,23 @@
 <?php
+
 namespace Ratchet\Application\Server;
+
 use Ratchet\Server\FlashPolicy;
 
 /**
  * @covers Ratchet\Server\FlashPolicy
  */
-class FlashPolicyTest extends \PHPUnit_Framework_TestCase {
-
+class FlashPolicyComponentTest extends \PHPUnit_Framework_TestCase
+{
     protected $_policy;
 
-    public function setUp() {
+    public function setUp()
+    {
         $this->_policy = new FlashPolicy();
     }
 
-    public function testPolicyRender() {
+    public function testPolicyRender()
+    {
         $this->_policy->setSiteControl('all');
         $this->_policy->addAllowedAccess('example.com', '*');
         $this->_policy->addAllowedAccess('dev.example.com', '*');
@@ -21,12 +25,14 @@ class FlashPolicyTest extends \PHPUnit_Framework_TestCase {
         $this->assertInstanceOf('SimpleXMLElement', $this->_policy->renderPolicy());
     }
 
-    public function testInvalidPolicyReader() {
+    public function testInvalidPolicyReader()
+    {
         $this->setExpectedException('UnexpectedValueException');
         $this->_policy->renderPolicy();
     }
 
-    public function testInvalidDomainPolicyReader() {
+    public function testInvalidDomainPolicyReader()
+    {
         $this->setExpectedException('UnexpectedValueException');
         $this->_policy->setSiteControl('all');
         $this->_policy->addAllowedAccess('dev.example.*', '*');
@@ -36,11 +42,13 @@ class FlashPolicyTest extends \PHPUnit_Framework_TestCase {
     /**
      * @dataProvider siteControl
      */
-    public function testSiteControlValidation($accept, $permittedCrossDomainPolicies) {
+    public function testSiteControlValidation($accept, $permittedCrossDomainPolicies)
+    {
         $this->assertEquals($accept, $this->_policy->validateSiteControl($permittedCrossDomainPolicies));
     }
 
-    public static function siteControl() {
+    public static function siteControl()
+    {
         return array(
             array(true, 'all')
           , array(true, 'none')
@@ -51,18 +59,20 @@ class FlashPolicyTest extends \PHPUnit_Framework_TestCase {
           , array(false, 'all ')
           , array(false, 'asdf')
           , array(false, '@893830')
-          , array(false, '*')
+          , array(false, '*'),
         );
     }
 
     /**
      * @dataProvider URI
      */
-    public function testDomainValidation($accept, $domain) {
+    public function testDomainValidation($accept, $domain)
+    {
         $this->assertEquals($accept, $this->_policy->validateDomain($domain));
     }
 
-    public static function URI() {
+    public static function URI()
+    {
         return array(
             array(true, '*')
           , array(true, 'example.com')
@@ -80,18 +90,20 @@ class FlashPolicyTest extends \PHPUnit_Framework_TestCase {
           , array(false, 'www.exa*le.com')
           , array(false, 'www.example.*com')
           , array(false, '*.example.*')
-          , array(false, 'gasldf*$#a0sdf0a8sdf')
+          , array(false, 'gasldf*$#a0sdf0a8sdf'),
         );
     }
 
     /**
      * @dataProvider ports
      */
-    public function testPortValidation($accept, $ports) {
+    public function testPortValidation($accept, $ports)
+    {
         $this->assertEquals($accept, $this->_policy->validatePorts($ports));
     }
 
-    public static function ports() {
+    public static function ports()
+    {
         return array(
             array(true, '*')
           , array(true, '80')
@@ -106,30 +118,34 @@ class FlashPolicyTest extends \PHPUnit_Framework_TestCase {
           , array(false, 'asdf,123')
           , array(false, '--')
           , array(false, ',,,')
-          , array(false, '838*')
+          , array(false, '838*'),
         );
     }
 
-    public function testAddAllowedAccessOnlyAcceptsValidPorts() {
+    public function testAddAllowedAccessOnlyAcceptsValidPorts()
+    {
         $this->setExpectedException('UnexpectedValueException');
 
         $this->_policy->addAllowedAccess('*', 'nope');
     }
 
-    public function testSetSiteControlThrowsException() {
+    public function testSetSiteControlThrowsException()
+    {
         $this->setExpectedException('UnexpectedValueException');
 
         $this->_policy->setSiteControl('nope');
     }
 
-    public function testErrorClosesConnection() {
+    public function testErrorClosesConnection()
+    {
         $conn = $this->getMock('\\Ratchet\\ConnectionInterface');
         $conn->expects($this->once())->method('close');
 
-        $this->_policy->onError($conn, new \Exception);
+        $this->_policy->onError($conn, new \Exception());
     }
 
-    public function testOnMessageSendsString() {
+    public function testOnMessageSendsString()
+    {
         $this->_policy->addAllowedAccess('*', '*');
 
         $conn = $this->getMock('\\Ratchet\\ConnectionInterface');
@@ -138,13 +154,15 @@ class FlashPolicyTest extends \PHPUnit_Framework_TestCase {
         $this->_policy->onMessage($conn, ' ');
     }
 
-    public function testOnOpenExists() {
+    public function testOnOpenExists()
+    {
         $this->assertTrue(method_exists($this->_policy, 'onOpen'));
         $conn = $this->getMock('\Ratchet\ConnectionInterface');
         $this->_policy->onOpen($conn);
     }
 
-    public function testOnCloseExists() {
+    public function testOnCloseExists()
+    {
         $this->assertTrue(method_exists($this->_policy, 'onClose'));
         $conn = $this->getMock('\Ratchet\ConnectionInterface');
         $this->_policy->onClose($conn);

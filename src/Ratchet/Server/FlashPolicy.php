@@ -2,8 +2,8 @@
 
 namespace Ratchet\Server;
 
-use Ratchet\MessageComponentInterface;
 use Ratchet\ConnectionInterface;
+use Ratchet\MessageComponentInterface;
 
 /**
  * An app to go on a server stack to pass a policy file to a Flash socket
@@ -134,7 +134,7 @@ class FlashPolicy implements MessageComponentInterface
             $this->_cacheValid = true;
         }
 
-        $from->send($this->_cache."\0");
+        $from->send($this->_cache . "\0");
         $from->close();
     }
 

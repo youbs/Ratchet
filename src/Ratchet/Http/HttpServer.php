@@ -2,9 +2,9 @@
 
 namespace Ratchet\Http;
 
-use Ratchet\MessageComponentInterface;
-use Ratchet\ConnectionInterface;
 use Guzzle\Http\Message\Response;
+use Ratchet\ConnectionInterface;
+use Ratchet\MessageComponentInterface;
 
 class HttpServer implements MessageComponentInterface
 {

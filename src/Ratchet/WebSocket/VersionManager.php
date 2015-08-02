@@ -2,8 +2,8 @@
 
 namespace Ratchet\WebSocket;
 
-use Ratchet\WebSocket\Version\VersionInterface;
 use Guzzle\Http\Message\RequestInterface;
+use Ratchet\WebSocket\Version\VersionInterface;
 
 /**
  * Manage the various versions of the WebSocket protocol

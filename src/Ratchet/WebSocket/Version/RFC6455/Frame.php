@@ -96,7 +96,7 @@ class Frame implements FrameInterface
             $this->secondByte = 126;
         }
 
-        $this->data = chr($this->firstByte).chr($this->secondByte).$ext.$payload;
+        $this->data = chr($this->firstByte) . chr($this->secondByte) . $ext . $payload;
         $this->bytesRecvd = 2 + strlen($ext) + $this->defPayLen;
     }
 
@@ -257,7 +257,7 @@ class Frame implements FrameInterface
         }
 
         if (static::MASK_LENGTH !== strlen($maskingKey)) {
-            throw new \InvalidArgumentException('Masking key must be '.static::MASK_LENGTH.' characters');
+            throw new \InvalidArgumentException('Masking key must be ' . static::MASK_LENGTH . ' characters');
         }
 
         if (extension_loaded('mbstring') && true !== mb_check_encoding($maskingKey, 'US-ASCII')) {

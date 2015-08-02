@@ -2,9 +2,9 @@
 
 namespace Ratchet\Wamp;
 
+use Ratchet\ConnectionInterface;
 use Ratchet\MessageComponentInterface;
 use Ratchet\WebSocket\WsServerInterface;
-use Ratchet\ConnectionInterface;
 
 /**
  * Enable support for the official WAMP sub-protocol in your application

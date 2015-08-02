@@ -2,8 +2,8 @@
 
 namespace Ratchet\Http\Guzzle\Http\Message;
 
-use Guzzle\Http\Message\RequestFactory as GuzzleRequestFactory;
 use Guzzle\Http\EntityBody;
+use Guzzle\Http\Message\RequestFactory as GuzzleRequestFactory;
 
 class RequestFactory extends GuzzleRequestFactory
 {

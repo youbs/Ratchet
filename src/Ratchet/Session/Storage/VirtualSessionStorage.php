@@ -2,9 +2,9 @@
 
 namespace Ratchet\Session\Storage;
 
-use Symfony\Component\HttpFoundation\Session\Storage\NativeSessionStorage;
-use Ratchet\Session\Storage\Proxy\VirtualProxy;
 use Ratchet\Session\Serialize\HandlerInterface;
+use Ratchet\Session\Storage\Proxy\VirtualProxy;
+use Symfony\Component\HttpFoundation\Session\Storage\NativeSessionStorage;
 
 class VirtualSessionStorage extends NativeSessionStorage
 {

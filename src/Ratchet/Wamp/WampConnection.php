@@ -2,8 +2,8 @@
 
 namespace Ratchet\Wamp;
 
-use Ratchet\ConnectionInterface;
 use Ratchet\AbstractConnectionDecorator;
+use Ratchet\ConnectionInterface;
 use Ratchet\Wamp\ServerProtocol as WAMP;
 
 /**
@@ -107,7 +107,7 @@ class WampConnection extends AbstractConnectionDecorator
                 list($prefix, $action) = explode($curieSeperator, $uri);
                 $expandedPrefix = isset($this->WAMP->prefixes[$prefix]) ? $this->WAMP->prefixes[$prefix] : $prefix;
 
-                return $expandedPrefix.$fullSeperator.$action;
+                return $expandedPrefix . $fullSeperator . $action;
             }
         }
 

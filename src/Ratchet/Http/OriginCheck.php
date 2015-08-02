@@ -3,9 +3,9 @@
 namespace Ratchet\Http;
 
 use Guzzle\Http\Message\RequestInterface;
+use Guzzle\Http\Message\Response;
 use Ratchet\ConnectionInterface;
 use Ratchet\MessageComponentInterface;
-use Guzzle\Http\Message\Response;
 
 /**
  * A middleware to ensure JavaScript clients connecting are from the expected domain.

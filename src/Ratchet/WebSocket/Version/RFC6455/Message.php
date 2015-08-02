@@ -2,8 +2,8 @@
 
 namespace Ratchet\WebSocket\Version\RFC6455;
 
-use Ratchet\WebSocket\Version\MessageInterface;
 use Ratchet\WebSocket\Version\FrameInterface;
+use Ratchet\WebSocket\Version\MessageInterface;
 
 class Message implements MessageInterface, \Countable
 {

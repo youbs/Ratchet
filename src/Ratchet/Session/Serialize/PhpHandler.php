@@ -26,7 +26,7 @@ class PhpHandler implements HandlerInterface
 
         while ($offset < strlen($raw)) {
             if (!strstr(substr($raw, $offset), '|')) {
-                throw new \UnexpectedValueException('invalid data, remaining: '.substr($raw, $offset));
+                throw new \UnexpectedValueException('invalid data, remaining: ' . substr($raw, $offset));
             }
 
             $pos = strpos($raw, '|', $offset);

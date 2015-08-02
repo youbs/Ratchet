@@ -14,7 +14,7 @@ class Connection extends AbstractConnectionDecorator
     public function send($msg)
     {
         if (!$this->WebSocket->closing) {
-            $this->getConnection()->send(chr(0).$msg.chr(255));
+            $this->getConnection()->send(chr(0) . $msg . chr(255));
         }
 
         return $this;

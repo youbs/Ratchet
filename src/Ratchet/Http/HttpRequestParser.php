@@ -2,9 +2,9 @@
 
 namespace Ratchet\Http;
 
-use Ratchet\MessageInterface;
 use Ratchet\ConnectionInterface;
 use Ratchet\Http\Guzzle\Http\Message\RequestFactory;
+use Ratchet\MessageInterface;
 
 /**
  * This class receives streaming data from a client request
