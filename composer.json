@@ -29,4 +29,12 @@
       , "symfony/http-foundation": "^2.2"
       , "symfony/routing": "^2.2"
     }
+  , "replace": {
+        "cboden/ratchet": "0.*"
+    }
+  , "extra": {
+        "branch-alias": {
+            "dev-master": "0.3-dev"
+        }
+    }
 }
